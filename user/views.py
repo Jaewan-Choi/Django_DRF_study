@@ -1,6 +1,8 @@
 from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import permissions
+from .serializers import UserSerializer
 from django.contrib.auth import login, logout, authenticate
 
 class UserView(APIView): # CBV 방식
@@ -10,7 +12,9 @@ class UserView(APIView): # CBV 방식
 
     # 사용자 정보 조회
     def get(self, request):
-        return Response({'message': 'get method!!'})
+        user = request.user
+        userserialize = UserSerializer(user).data
+        return Response({'userserialize': userserialize})
     
     # 회원가입
     def post(self, request):
@@ -34,6 +38,7 @@ class UserApiView(APIView):
         password = request.data.get('password', '')
 
         user = authenticate(request, email=email, password=password)
+
         # 인증 실패시
         if not user:
             return Response({"error": "존재하지 않는 계정이거나 패스워드가 일치하지 않습니다."})
