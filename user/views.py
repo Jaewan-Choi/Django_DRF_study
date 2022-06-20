@@ -5,6 +5,7 @@ from rest_framework import permissions
 from .serializers import UserSerializer
 from django.contrib.auth import login, logout, authenticate
 
+
 class UserView(APIView): # CBV 방식
     # permission_classes = [permissions.AllowAny] # 누구나 view 조회 가능 (설정하지 않았을 때 기본값)
     # permission_classes = [permissions.IsAdminUser] # admin만 view 조회 가능
@@ -14,6 +15,7 @@ class UserView(APIView): # CBV 방식
     def get(self, request):
         user = request.user
         userserialize = UserSerializer(user).data
+
         return Response({'userserialize': userserialize})
     
     # 회원가입

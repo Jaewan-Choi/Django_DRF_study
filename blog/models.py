@@ -17,6 +17,8 @@ class Article(models.Model):
     title = models.CharField("제목", max_length=5)
     category = models.ManyToManyField(Category, verbose_name="카테고리")
     content = models.TextField("내용", max_length=20)
+    start_view = models.DateTimeField("노출 시작 일자", null=True)
+    end_view = models.DateTimeField("노출 종료 일자", null=True)
 
     def __str__(self):
         return f"[게시글] {self.title} / {self.user.email}"
@@ -29,4 +31,4 @@ class Comment(models.Model):
     content = models.TextField("내용")
 
     def __str__(self):
-        return f"[코멘트] {self.content} / {self.user.username}"
+        return f"[코멘트] {self.content} / {self.user.email}"

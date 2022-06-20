@@ -76,4 +76,4 @@ class UserProfile(models.Model):
     hobby = models.CharField("취미", max_length=50)
 
     def __str__(self):
-        return f"[프로필] {self.user.username}"
+        return f"[프로필] {self.user.email}"
