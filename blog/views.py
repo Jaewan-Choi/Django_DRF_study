@@ -1,6 +1,5 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-# from rest_framework import permissions
 from DRF.permissions import IsAdminOrIsAuthenticatedReadOnly
 from user.models import User as UserModel
 from .models import Article as ArticleModel
