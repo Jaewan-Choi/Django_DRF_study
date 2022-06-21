@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework import permissions
+from .models import User as UserModel
 from .serializers import UserSerializer
 from django.contrib.auth import login, logout, authenticate
 
@@ -14,17 +15,31 @@ class UserView(APIView): # CBV 방식
     # 사용자 정보 조회
     def get(self, request):
         user = request.user
-        userserialize = UserSerializer(user).data
+        user_serialize = UserSerializer(user).data
 
-        return Response({'userserialize': userserialize})
+        return Response({'user_serialize': user_serialize}, status=status.HTTP_200_OK)
     
     # 회원가입
     def post(self, request):
-        return Response({'message': 'post method!!'})
+        user_serializer = UserSerializer(data=request.data, context={'request': request})
 
-    # 회원 정보 수정
+        if user_serializer.is_valid():
+            user_serializer.save()
+            user_serializer = user_serializer.data
+            return Response({'User_Serializer': user_serializer}, status=status.HTTP_200_OK)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # 로그인 사용자의 회원 정보 수정
     def put(self, request):
-        return Response({'message': 'put method!!'})
+        user_id = request.user.id
+        user = UserModel.objects.get(id=user_id)
+        user_serializer = UserSerializer(user, data=request.data, context={'request': request}, partial=True)
+        
+        if user_serializer.is_valid():
+            user_serializer.save()
+            user_serializer = user_serializer.data
+            return Response({'User_Serializer': user_serializer}, status=status.HTTP_200_OK)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 회원 탈퇴
     def delete(self, request):

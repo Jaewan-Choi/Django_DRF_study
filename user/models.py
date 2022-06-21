@@ -51,7 +51,7 @@ class User(AbstractBaseUser):
 
     # 어드민 페이지에서 데이터를 제목을 어떻게 붙여줄 것인지 지정
     def __str__(self):
-        return f"[유저] {self.username} / {self.email}"
+        return f"[유저] 🔸pk : {self.id} 🔸사용자 계정 : {self.username} 🔸이메일 : {self.email}"
 
     # 로그인 사용자의 특정 테이블의 crud 권한을 설정, perm table의 crud 권한이 들어간다.
     # admin일 경우 항상 True, 비활성 사용자(is_active=False)의 경우 항상 False
@@ -76,4 +76,4 @@ class UserProfile(models.Model):
     hobby = models.CharField("취미", max_length=50)
 
     def __str__(self):
-        return f"[프로필] {self.user.email}"
+        return f"[프로필] 🔸  pk : {self.id} 🔸  이메일 : {self.user.email}"

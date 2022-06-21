@@ -8,7 +8,7 @@ class Category(models.Model):
     desc = models.TextField("설명", max_length=256, blank=True)
 
     def __str__(self):
-        return f"[카테고리] {self.category}"
+        return f"[카테고리] 🔸  pk : {self.id} 🔸  카테고리 : {self.category}"
 
 
 # 게시글 테이블
@@ -21,7 +21,7 @@ class Article(models.Model):
     end_view = models.DateTimeField("노출 종료 일자", null=True)
 
     def __str__(self):
-        return f"[게시글] {self.title} / {self.user.email}"
+        return f"[게시글] 🔸  pk : {self.id} 🔸 제목 : {self.title} 🔸  작성자 이메일 : {self.user.email}"
 
 
 # 코멘트 테이블
@@ -31,4 +31,4 @@ class Comment(models.Model):
     content = models.TextField("내용")
 
     def __str__(self):
-        return f"[코멘트] {self.content} / {self.user.email}"
+        return f"[코멘트] 🔸  pk : {self.id} 🔸 내용 : {self.content} 🔸 작성자 이메일 : {self.user.email}"
