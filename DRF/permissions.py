@@ -33,3 +33,28 @@ class IsAdminOrIsAuthenticatedReadOnly(BasePermission):
             return True
         
         return False
+
+
+class IsAdminOr3DaysAuthenticatedOrReadOnly(BasePermission):
+    NEED_AUTH_METHODS = ['POST', 'PUT', 'DELETE']
+    message = '접근 권한이 없습니다.'
+
+    def has_permission(self, request, view):
+        user = request.user
+
+        if not user.is_authenticated and request.method == 'GET':
+            return True
+        
+        elif not user.is_authenticated and request.method in self.NEED_AUTH_METHODS:
+            response ={
+                    "detail": "서비스를 이용하기 위해 로그인 해주세요.",
+                }
+            raise GenericAPIException(status_code=status.HTTP_401_UNAUTHORIZED, detail=response)
+
+        elif user.is_authenticated and user.join_date < (datetime.now() - timedelta(minutes=3)):
+            return True
+            
+        elif user.is_admin:
+            return True
+        
+        return False

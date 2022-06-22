@@ -25,8 +25,7 @@ class UserView(APIView): # CBV 방식
 
         if user_serializer.is_valid():
             user_serializer.save()
-            user_serializer = user_serializer.data
-            return Response({'User_Serializer': user_serializer}, status=status.HTTP_200_OK)
+            return Response(user_serializer.data, status=status.HTTP_200_OK)
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     # 로그인 사용자의 회원 정보 수정

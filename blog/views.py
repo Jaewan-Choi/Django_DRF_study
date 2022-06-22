@@ -12,11 +12,13 @@ from rest_framework import status
 class Article(APIView):
     permission_classes = [IsAdminOrIsAuthenticatedReadOnly]
 
+    # 게시글 조회
     def get(self, request):
         user = request.user
         articles = ArticleModel.objects.filter(user=user, start_view__lt=datetime.now(), end_view__gt=datetime.now()).order_by('-id').values()
         return Response({'articles': articles})
 
+    # 게시글 작성
     def post(self, request):
         user = request.user
         if user.join_date > (datetime.now() - timedelta(minutes=3)):
@@ -75,18 +77,16 @@ class Article(APIView):
 
             return Response({'message': '게시글 작성 완료'})
 
+    # 게시글 수정
     def put(self, request, obj_id):
         article = ArticleModel.objects.get(id=obj_id)
-        print(f"🔸{article.user.pk}")
-        print(f"🔸{request.user.id}")
         if article.user.pk != request.user.id:
             return Response({'message': '본인 게시글만 수정 가능합니다'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        category = request.data['category']
+
         article_serializer = ArticleSerializer(article, data=request.data, context={"request": request}, partial=True)
         if article_serializer.is_valid():
             article_serializer.save()
-            article_serializer = article_serializer.data
-            return Response({'article_serializer': article_serializer}, status=status.HTTP_200_OK)
+            print(article_serializer.data)
+            return Response(article_serializer.data, status=status.HTTP_200_OK)
         
         return Response(article_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -3,7 +3,15 @@ from .models import User as UserModel
 from .models import UserProfile as UserProfileModel
 from blog.models import Article as ArticleModel
 from blog.models import Comment as CommentModel
+from blog.models import Category as CategoryModel
 from django.contrib.auth.hashers import make_password
+
+
+class CategorySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CategoryModel
+        fields = ["category"]
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -19,23 +27,6 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class ArticleSerializer(serializers.ModelSerializer):
 
-    def validate(self, data):
-        if self.context.get("request").method == 'PUT':
-            return data
-
-    def update(self, article, validated_data):
-        for key, value in validated_data.items():
-            setattr(article, key, value)
-        article.save()
-        # 카테고리 저장안됨
-        # article.category.add()
-
-        return article
-
-    class Meta:
-        model = ArticleModel
-        fields = ["title", "content", "comment_set", "category"]
-
     comment_set = CommentSerializer(many=True)
     category = serializers.SerializerMethodField()
     def get_category(self, obj):
@@ -43,6 +34,25 @@ class ArticleSerializer(serializers.ModelSerializer):
         for category in obj.category.all():
             categorys.append(category.category)
         return categorys
+
+    categories = serializers.ListField(required=False)
+    def validate(self, data):
+        if self.context.get("request").method == 'PUT':
+            return data
+
+    def update(self, article, validated_data):
+        print(validated_data)
+        category = validated_data.pop('categories')
+        for key, value in validated_data.items():
+            setattr(article, key, value)
+        article.save()
+        article.category.set(category)
+
+        return article
+
+    class Meta:
+        model = ArticleModel
+        fields = ["title", "content", "comment_set", "category", "categories"]
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

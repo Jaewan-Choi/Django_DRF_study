@@ -33,10 +33,10 @@ class User(AbstractBaseUser):
     join_date = models.DateTimeField("가입일", auto_now_add=True)
 
     # 활성화 여부
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField("계정 활성화 여부", default=True)
 
     # 관리자 권한 여부
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField("관리자 권한", default=False)
 
     # 실제 로그인에 사용되는 아이디
     USERNAME_FIELD = 'email'
@@ -76,4 +76,4 @@ class UserProfile(models.Model):
     hobby = models.CharField("취미", max_length=50)
 
     def __str__(self):
-        return f"[프로필] 🔸  pk : {self.id} 🔸  이메일 : {self.user.email}"
+        return f"[프로필] 🔸pk : {self.id} 🔸이메일 : {self.user.email}"
